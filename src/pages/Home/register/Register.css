@@ -1,0 +1,130 @@
+/* Full screen container with background */
+.login {
+  width: 100vw;
+  height: 100vh;
+  background: url("assets/moonlight.jpg") center center / cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Wrapper split into left and right */
+.loginWrapper {
+  width: 60%;
+  height: 80%;
+  display: flex;
+  backdrop-filter: blur(4px);
+}
+
+/* Common styles for both sides */
+.loginLeft,
+.loginRight {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Logo styling */
+.loginLogo {
+  font-size: 100px;
+  font-weight: 800;
+  color: rgba(53, 138, 109, 0.808);
+  margin-bottom: 10px;
+  text-shadow: 3px 3px 4px white;
+  font-family: "Great Vibes", cursive;
+}
+
+/* Description below logo */
+.loginDesc {
+  font-size: 40px;
+  font-weight: 400;
+  color: wheat;
+  font-family: "Great Vibes", cursive;
+}
+
+/* Highlight word inside desc */
+.moonlight {
+  color: rgba(53, 138, 109, 0.808);
+  text-shadow: 3px 3px 4px #f7f4f4;
+  font-weight: 600;
+}
+
+/* Form box */
+.loginBox {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 6px 8px 18px 6px rgba(252, 252, 252, 0.3);
+  gap: 15px;
+  
+}
+
+/* Input fields */
+.loginInput {
+  height: 50px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 18px;
+  padding-left: 20px;
+  background-color: transparent;
+  color: white;
+  
+}
+
+/* Placeholder color */
+.loginInput::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+}
+
+/* No outline on focus */
+.loginInput:focus {
+  outline: none;
+}
+
+/* Submit button */
+.loginButton {
+  height: 50px;
+  border-radius: 10px;
+  border: none;
+  background-color: rgba(53, 138, 109, 0.808);
+  color: white;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.loginButton:hover {
+  background-color: rgba(53, 138, 109, 0.95);
+}
+
+/* Forgot password */
+.loginForgot {
+  text-align: center;
+  color: #5c5cb0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Register button */
+.loginRegisterButton {
+  height: 50px;
+  width: 60%;
+  align-self: center;
+  border-radius: 10px;
+  border: none;
+  background-color: rgba(169, 45, 59, 0.808);
+  color: white;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.loginRegisterButton:hover {
+  background-color: rgba(169, 45, 59, 1);
+}
