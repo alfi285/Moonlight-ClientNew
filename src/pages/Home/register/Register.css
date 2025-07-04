@@ -70,13 +70,13 @@
   font-size: 18px;
   padding-left: 20px;
   background-color: transparent;
-  color: white;
+  color: rgb(155, 92, 52);
   
 }
 
 /* Placeholder color */
 .loginInput::placeholder {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(96, 156, 132, 0.7);
   font-style: italic;
 }
 
