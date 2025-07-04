@@ -1,8 +1,7 @@
-// 📁 src/pages/Register.jsx
 import "./Register.css";
 import { useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom"; // ✅ useNavigate
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -10,12 +9,13 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const navigate = useNavigate(); // ✅ Correct hook usage
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous error
+    setError("");
 
     if (password !== passwordAgain) {
       setError("❌ Passwords do not match!");
@@ -23,7 +23,7 @@ const Register = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/register", {
+      const res = await axios.post(`${BASE_URL}/api/auth/register`, {
         username,
         email,
         password,
@@ -31,8 +31,7 @@ const Register = () => {
 
       console.log("✅ User registered:", res.data);
       setError("✅ Registration Successful! Redirecting...");
-      
-      // Wait for 1s before redirecting to login
+
       setTimeout(() => {
         navigate("/login");
       }, 1000);
@@ -91,7 +90,14 @@ const Register = () => {
                 Log into Account
               </button>
             </Link>
-            {error && <p id="error" style={{ color: error.includes("Success") ? "green" : "red" }}>{error}</p>}
+            {error && (
+              <p
+                id="error"
+                style={{ color: error.includes("Success") ? "green" : "red" }}
+              >
+                {error}
+              </p>
+            )}
           </form>
         </div>
       </div>

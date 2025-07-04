@@ -1,4 +1,3 @@
-// 📁 src/pages/Login.jsx
 import './Login.css';
 import { useState } from 'react';
 import axios from 'axios';
@@ -7,29 +6,29 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
-  const [error,setError]=useState();
+
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError(""); // clear previous error
+    e.preventDefault();
+    setError("");
 
-  try {
-    const res = await axios.post("http://localhost:3000/api/auth/login", {
-      email,
-      password,
-    });
+    try {
+      const res = await axios.post(`${BASE_URL}/api/auth/login`, {
+        email,
+        password,
+      });
 
-    localStorage.setItem("token", res.data.token);
-    localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
-    // 🔁 Force page reload to pick up new token in App.jsx
-    window.location.href = "/home";
-  } catch (err) {
-    setError("❌ Invalid credentials or server error");
-  }
-};
-
+      window.location.href = "/home";
+    } catch (err) {
+      setError("❌ Invalid credentials or server error");
+    }
+  };
 
   return (
     <div className="login">
@@ -51,7 +50,6 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-
             <input
               type="password"
               className="loginInput"
@@ -60,11 +58,8 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-
             <button className="loginButton" type="submit">Log In</button>
-
             <span className="loginforgot">Forgot Password?</span>
-
             <button
               className="loginRegisterButton"
               type="button"
@@ -72,7 +67,7 @@ const Login = () => {
             >
               Create a New Account
             </button>
-           {error && <p id="error" style={{ color: "red" }}>{error}</p>}
+            {error && <p id="error" style={{ color: "red" }}>{error}</p>}
           </form>
         </div>
       </div>

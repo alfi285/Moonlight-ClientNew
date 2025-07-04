@@ -15,17 +15,17 @@ import axios from "axios";
 const Sidebar = () => {
   const [friends, setFriends] = useState([]);
   const currentUser = JSON.parse(localStorage.getItem("user"));
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api/users/${currentUser._id}`);
+        const res = await axios.get(`${BASE_URL}/api/users/${currentUser._id}`);
         const followedIds = res.data.followings || [];
 
-        // Fetch user details for each following ID (if needed)
         const friendData = await Promise.all(
           followedIds.map(id =>
-            axios.get(`http://localhost:3000/api/users/${id}`).then(res => res.data)
+            axios.get(`${BASE_URL}/api/users/${id}`).then(res => res.data)
           )
         );
 
@@ -36,7 +36,7 @@ const Sidebar = () => {
     };
 
     fetchFriends();
-  }, [currentUser._id]);
+  }, [currentUser._id, BASE_URL]);
 
   return (
     <div className="sidebar">
