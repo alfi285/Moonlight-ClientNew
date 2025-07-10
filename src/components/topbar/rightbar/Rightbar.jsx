@@ -12,6 +12,8 @@ const Rightbar = ({ profile, user, showSuggestions }) => {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
+    if (!currentUser?._id) return; // ✅ prevent crashes
+
     const fetchOnlineFriends = async () => {
       try {
         const res = await axios.get(`${API_BASE}/api/users/${currentUser._id}`);
@@ -45,7 +47,7 @@ const Rightbar = ({ profile, user, showSuggestions }) => {
 
     fetchOnlineFriends();
     if (showSuggestions) fetchSuggestions();
-  }, [currentUser._id, showSuggestions, token]);
+  }, [currentUser, showSuggestions, token, API_BASE]);
 
   const handleFollow = async (targetUserId, isCurrentlyFollowing) => {
     try {
@@ -70,6 +72,9 @@ const Rightbar = ({ profile, user, showSuggestions }) => {
       console.error("Follow/unfollow error", err);
     }
   };
+
+  // 🔐 If not logged in, return null
+  if (!currentUser) return null;
 
   const HomeRightbar = () => (
     <>

@@ -12,6 +12,8 @@ const Share = () => {
   const [desc, setDesc] = useState("");
   const [file, setFile] = useState(null);
 
+  if (!user) return null; // ✅ Prevent crash if user is not found
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -33,7 +35,7 @@ const Share = () => {
 
       setDesc("");
       setFile(null);
-      window.location.reload();
+      window.location.reload(); // temporary approach
     } catch (err) {
       console.error("Post creation failed:", err);
     }
@@ -48,7 +50,7 @@ const Share = () => {
             src={
               user.profilePicture
                 ? `${API_BASE}/uploads/${user.profilePicture}`
-                : "/assets/person/noAvatar.png"
+                : "/assets/person/noAvatar.png" // ✅ Fallback
             }
             alt="Profile"
           />

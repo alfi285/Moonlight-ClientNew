@@ -11,15 +11,27 @@ import SchoolIcon from '@mui/icons-material/School';
 import CloseFriend from "../../closefriend/CloseFriend";
 import { useEffect, useState } from "react";
 import axios from "axios";
+// import { useNavigate } from "react-router-dom"; // Optional for redirect
 
 const Sidebar = () => {
   const [friends, setFriends] = useState([]);
-  const currentUser = JSON.parse(localStorage.getItem("user"));
   const BASE_URL = import.meta.env.VITE_API_URL;
+
+  // Parse user from localStorage safely
+  const currentUser = JSON.parse(localStorage.getItem("user"));
+
+  // Optional: Redirect if user not found
+  // const navigate = useNavigate();
+  // if (!currentUser) {
+  //   navigate("/login");
+  //   return null;
+  // }
 
   useEffect(() => {
     const fetchFriends = async () => {
       try {
+        if (!currentUser?._id) return;
+
         const res = await axios.get(`${BASE_URL}/api/users/${currentUser._id}`);
         const followedIds = res.data.followings || [];
 
@@ -36,7 +48,9 @@ const Sidebar = () => {
     };
 
     fetchFriends();
-  }, [currentUser._id, BASE_URL]);
+  }, [currentUser, BASE_URL]);
+
+  if (!currentUser) return null; // Optional: Hide sidebar if not logged in
 
   return (
     <div className="sidebar">
