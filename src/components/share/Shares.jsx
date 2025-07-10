@@ -45,15 +45,18 @@ const Share = () => {
     <div className="share">
       <div className="shareWrapper">
         <div className="shareTop">
-          <img
-            className="shareProfileImg"
-            src={
-              user.profilePicture
-                ? `${API_BASE}/uploads/${user.profilePicture}`
-                : "/assets/person/noAvatar.png" // ✅ Fallback
-            }
-            alt="Profile"
-          />
+         <img
+  className="shareProfileImg"
+  src={
+    user?.profilePicture
+      ? user.profilePicture.startsWith("http")
+        ? user.profilePicture
+        : `${API_BASE}/uploads/${user.profilePicture}`
+      : "/assets/person/noAvatar.png"
+  }
+  alt="Profile"
+/>
+
           <input
             placeholder={`What's on your mind, ${user.username}?`}
             className="shareInput"
