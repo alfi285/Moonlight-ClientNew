@@ -4,6 +4,9 @@ import Home from './pages/Home/Home';
 import Register from './pages/Home/register/Register';
 import Login from './pages/login/Login';
 
+import './responsive.css';
+
+
 const App = () => {
   const token = localStorage.getItem("token");
 

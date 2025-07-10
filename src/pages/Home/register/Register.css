@@ -59,7 +59,6 @@
   flex-direction: column;
   box-shadow: 6px 8px 18px 6px rgba(252, 252, 252, 0.3);
   gap: 15px;
-  
 }
 
 /* Input fields */
@@ -71,16 +70,13 @@
   padding-left: 20px;
   background-color: transparent;
   color: rgb(155, 92, 52);
-  
 }
 
-/* Placeholder color */
 .loginInput::placeholder {
   color: rgba(96, 156, 132, 0.7);
   font-style: italic;
 }
 
-/* No outline on focus */
 .loginInput:focus {
   outline: none;
 }
@@ -127,4 +123,82 @@
 
 .loginRegisterButton:hover {
   background-color: rgba(169, 45, 59, 1);
+}
+
+/* ===================== Responsive Design ===================== */
+@media (max-width: 1024px) {
+  .loginWrapper {
+    width: 80%;
+    height: 85%;
+  }
+
+  .loginLogo {
+    font-size: 80px;
+  }
+
+  .loginDesc {
+    font-size: 32px;
+  }
+
+  .loginRegisterButton {
+    width: 70%;
+  }
+}
+
+@media (max-width: 768px) {
+  .loginWrapper {
+    flex-direction: column;
+    width: 90%;
+    height: auto;
+    padding: 30px 0;
+  }
+
+  .loginLeft,
+  .loginRight {
+    align-items: center;
+  }
+
+  .loginLogo {
+    font-size: 60px;
+    text-align: center;
+  }
+
+  .loginDesc {
+    font-size: 24px;
+    text-align: center;
+  }
+
+  .loginBox {
+    width: 90%;
+  }
+
+  .loginInput {
+    width: 100%;
+  }
+
+  .loginRegisterButton {
+    width: 80%;
+  }
+}
+
+@media (max-width: 480px) {
+  .loginLogo {
+    font-size: 40px;
+  }
+
+  .loginDesc {
+    font-size: 18px;
+  }
+
+  .loginInput,
+  .loginButton,
+  .loginRegisterButton {
+    font-size: 16px;
+    height: 45px;
+  }
+
+  .loginBox {
+    padding: 15px;
+    gap: 10px;
+  }
 }
