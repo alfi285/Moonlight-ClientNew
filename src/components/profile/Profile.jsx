@@ -18,36 +18,57 @@ const Profile = () => {
   const [bio, setBio] = useState("");
   const [profilePicFile, setProfilePicFile] = useState(null);
   const [coverPicFile, setCoverPicFile] = useState(null);
+  const [currentUserData, setCurrentUserData] = useState(null); // fresh current user
 
-  const currentUser = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
+  const localCurrentUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchData = async () => {
       try {
-        const res = await axios.get(`${API_BASE}/api/users?username=${username}`);
-        setUser(res.data);
-        setCity(res.data.from || "");
-        setRelationship(res.data.relationship || "");
-        setBio(res.data.bio || "");
-        setIsFollowing(res.data.followers?.includes(currentUser._id));
+        // 1. Get profile user by username
+        const userRes = await axios.get(`${API_BASE}/api/users?username=${username}`);
+        setUser(userRes.data);
+        setCity(userRes.data.from || "");
+        setRelationship(userRes.data.relationship || "");
+        setBio(userRes.data.bio || "");
+
+        // 2. Fetch fresh current user data from DB
+        const currentUserRes = await axios.get(`${API_BASE}/api/users/${localCurrentUser._id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCurrentUserData(currentUserRes.data);
+
+        // 3. Check follow status
+        setIsFollowing(userRes.data.followers?.includes(currentUserRes.data._id));
       } catch (err) {
-        console.error("Failed to load user:", err);
+        console.error("❌ Failed to fetch profile or current user:", err);
       }
-      
     };
-    fetchUser();
+
+    fetchData();
   }, [username]);
 
   const handleFollow = async () => {
     try {
       await axios.put(
         `${API_BASE}/api/users/${user._id}/${isFollowing ? "unfollow" : "follow"}`,
-        { userId: currentUser._id }
+        { userId: localCurrentUser._id },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
+
+      // Toggle isFollowing
       setIsFollowing(!isFollowing);
+
+      // Update followers count visually
+      setUser((prevUser) => ({
+        ...prevUser,
+        followers: isFollowing
+          ? prevUser.followers.filter((id) => id !== localCurrentUser._id)
+          : [...prevUser.followers, localCurrentUser._id],
+      }));
     } catch (err) {
-      console.error("Follow/unfollow failed:", err);
+      console.error("❌ Follow/Unfollow failed:", err);
     }
   };
 
@@ -77,7 +98,7 @@ const Profile = () => {
       const updateRes = await axios.put(
         `${API_BASE}/api/users/${user._id}`,
         {
-          userId: currentUser._id,
+          userId: localCurrentUser._id,
           from: city,
           relationship,
           bio,
@@ -93,15 +114,22 @@ const Profile = () => {
       setRelationship(updateRes.data.relationship || "");
       setBio(updateRes.data.bio || "");
 
-      if (currentUser._id === user._id) {
+      if (localCurrentUser._id === user._id) {
         localStorage.setItem("user", JSON.stringify(updateRes.data));
       }
 
       window.location.reload();
     } catch (err) {
-      console.error("Update failed:", err.response || err);
-      alert("❌ Update failed");
+      console.error("❌ Profile update failed:", err);
+      alert("Update failed.");
     }
+  };
+
+  const relationshipText = (code) => {
+    if (code === "1") return "Single";
+    if (code === "2") return "Married";
+    if (code === "3") return "Complicated";
+    return "Not specified";
   };
 
   return (
@@ -159,7 +187,7 @@ const Profile = () => {
               <span className="profileInfoCity">📍 {user.from || "Unknown City"}</span>
               <span className="profileInfoRel">💍 {relationshipText(user.relationship)}</span>
 
-              {currentUser.username === username ? (
+              {localCurrentUser.username === username ? (
                 <div className="profileEditSection">
                   <input
                     type="text"
@@ -205,12 +233,5 @@ const Profile = () => {
     </div>
   );
 };
-
-function relationshipText(code) {
-  if (code === "1") return "Single";
-  if (code === "2") return "Married";
-  if (code === "3") return "Complicated";
-  return "Not specified";
-}
 
 export default Profile;
