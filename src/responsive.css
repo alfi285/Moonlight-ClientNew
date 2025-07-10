@@ -1,5 +1,139 @@
-/* Base mobile styles */
-@media only screen and (max-width: 768px) {
+/* responsive.css */
+
+/* Base styles for small screens (default mobile-first approach) */
+body {
+  font-size: 16px;
+}
+
+/* TOPBAR */
+.topbarContainer {
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.topbarCenter,
+.topbarRight {
+  display: none;
+}
+
+.menuToggle {
+  display: block;
+  cursor: pointer;
+}
+
+/* SIDEBAR */
+.sidebar {
+  display: none;
+}
+
+/* FEED */
+.feed,
+.rightbar {
+  width: 100% !important;
+}
+
+/* PROFILE */
+.profile {
+  flex-direction: column;
+}
+
+.profileRight {
+  width: 100%;
+}
+
+.profileRightTop,
+.profileRightBottom {
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+}
+
+.profileUserImg {
+  width: 100px;
+  height: 100px;
+  top: 130px;
+  left: 10px;
+}
+
+/* LOGIN PAGE */
+.loginWrapper {
+  flex-direction: column;
+  width: 95%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.loginLeft,
+.loginRight {
+  align-items: center;
+  text-align: center;
+}
+
+.loginLogo {
+  font-size: 48px;
+}
+
+.loginDesc {
+  font-size: 20px;
+}
+
+.loginBox {
+  width: 100%;
+}
+
+/* POST */
+.postImg {
+  max-height: 300px;
+  object-fit: cover;
+}
+
+/* PROFILE IMAGE FIX */
+.topbarImg,
+.postProfileImg,
+.rightbarProfileImg,
+.sidebarFriendImg {
+  width: 30px !important;
+  height: 30px !important;
+  object-fit: cover;
+}
+
+/* HOME CONTAINER */
+.homeContainer {
+  flex-direction: column;
+}
+
+/* FOLLOW BUTTONS */
+.followButton,
+.followBtn {
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+/* SHARE AREA */
+.shareImgContainer img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ADJUST RIGHTBAR SUGGESTIONS */
+.rightbarFollowing {
+  width: 48%;
+}
+
+.suggestedUser {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* SCROLLBAR HIDE ON MOBILE */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* MEDIA QUERIES (Tablet and Below) */
+@media screen and (max-width: 768px) {
   .topbarCenter,
   .topbarRight {
     display: none;
@@ -15,42 +149,37 @@
     padding: 10px;
   }
 
-  .homeContainer {
-    flex-direction: column;
+  .profileUserImg {
+    left: 10px;
+    top: 140px;
+    width: 100px;
+    height: 100px;
   }
+}
 
-  .profileRightTop,
-  .profileRightBottom {
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .loginWrapper {
-    flex-direction: column;
-    width: 90%;
-    height: auto;
-  }
-
-  .loginLeft {
-    align-items: center;
-    text-align: center;
-  }
-
+/* MEDIA QUERIES (Mobile) */
+@media screen and (max-width: 480px) {
   .loginLogo {
-    font-size: 50px;
+    font-size: 36px;
   }
 
   .loginDesc {
-    font-size: 24px;
+    font-size: 16px;
   }
 
-  .loginBox {
+  .loginRegisterButton {
     width: 100%;
   }
 
-  .rightbar,
-  .feed {
-    width: 100%;
+  .postImg {
+    max-height: 200px;
+  }
+
+  .profileInfoName {
+    font-size: 20px;
+  }
+
+  .profileInfoDesc {
+    font-size: 14px;
   }
 }
