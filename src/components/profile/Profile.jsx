@@ -34,6 +34,7 @@ const Profile = () => {
       } catch (err) {
         console.error("Failed to load user:", err);
       }
+      
     };
     fetchUser();
   }, [username]);

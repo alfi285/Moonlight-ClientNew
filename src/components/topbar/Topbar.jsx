@@ -1,4 +1,3 @@
-// 📁 src/components/Topbar.jsx
 import "./Topbar.css";
 import { Link } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
@@ -7,15 +6,34 @@ import ChatIcon from "@mui/icons-material/Chat";
 import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { useState } from "react";
+import axios from "axios";
+
+const API_BASE = import.meta.env.VITE_API_URL;
 
 const Topbar = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const [searchQuery, setSearchQuery] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.href = "/login";
+  };
+
+  const handleSearch = async (e) => {
+    if (e.key === "Enter") {
+      try {
+        const res = await axios.get(`${API_BASE}/api/users?username=${searchQuery}`);
+        if (res.data?._id) {
+          setErrorMessage("");
+          window.location.href = `/profile/${searchQuery}`;
+        }
+      } catch (err) {
+        console.error("User not found:", err);
+        setErrorMessage("⚠️ Enter a registered user or check the username");
+      }
+    }
   };
 
   return (
@@ -33,13 +51,10 @@ const Topbar = () => {
             placeholder="Search by username"
             className="searchInput"
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                window.location.href = `/profile/${searchQuery}`;
-              }
-            }}
+            onKeyDown={handleSearch}
           />
         </div>
+        {errorMessage && <p className="searchError">{errorMessage}</p>}
       </div>
 
       <div className="topbarRight">
@@ -64,23 +79,19 @@ const Topbar = () => {
           </div>
         </div>
 
-        {/* ✅ Profile picture and username */}
         <Link to={`/profile/${user?.username}`} className="topbarProfile">
           <img
-  src={
-    user?.profilePicture
-      ? user.profilePicture // already full URL
-      : "/assets/person/noAvatar.png"
-  }
-  alt="profile"
-  className="topbarImg"
-/>
-
-
+            src={
+              user?.profilePicture
+                ? user.profilePicture
+                : "/assets/person/noAvatar.png"
+            }
+            alt="profile"
+            className="topbarImg"
+          />
           <p className="uname">{user?.username}</p>
         </Link>
 
-        {/* ✅ Logout button */}
         <button className="logoutBtn" onClick={handleLogout}>
           <ExitToAppIcon style={{ marginRight: "5px" }} />
           Logout

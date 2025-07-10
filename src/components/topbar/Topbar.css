@@ -132,4 +132,9 @@
 .logoutBtn:hover {
   background-color: #d94343;
 }
+.searchError {
+  color: #ff4d4d;
+  font-size: 13px;
+  margin-top: 4px;
+}
 
