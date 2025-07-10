@@ -32,18 +32,19 @@ const Rightbar = ({ profile, user, showSuggestions }) => {
       }
     };
 
-    const fetchSuggestions = async () => {
-      try {
-        const res = await axios.get(`${API_BASE}/api/suggestions`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setSuggestedUsers(res.data);
-      } catch (err) {
-        console.error("Failed to fetch suggestions", err);
-      }
-    };
+   const fetchSuggestions = async () => {
+  try {
+    const res = await axios.get(`${API_BASE}/api/users/suggestions`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setSuggestedUsers(res.data);
+  } catch (err) {
+    console.error("Failed to fetch suggestions", err);
+  }
+};
+
 
     fetchOnlineFriends();
     if (showSuggestions) fetchSuggestions();
