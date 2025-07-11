@@ -37,7 +37,13 @@ const Register = () => {
       }, 1000);
     } catch (err) {
       console.error("❌ Registration failed:", err);
-      setError("❌ Error registering user. Please try again.");
+
+      // Handle backend validation error message
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(`❌ ${err.response.data.message}`);
+      } else {
+        setError("❌ Error registering user. Please try again.");
+      }
     }
   };
 
