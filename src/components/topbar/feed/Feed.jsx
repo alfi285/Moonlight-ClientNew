@@ -11,28 +11,28 @@ const Feed = ({ username }) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
 
- const fetchPosts = async () => {
-  if (!user?._id) {
-    console.warn("User ID not found. Cannot fetch posts.");
-    return;
-  }
+  const fetchPosts = async () => {
+    if (!user || !user._id) {
+      console.warn("❌ User ID not found. Skipping fetch.");
+      return;
+    }
 
-  try {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
 
-    const res = username
-      ? await axios.get(`${API_BASE}/api/posts/profile/${username}`, config)
-      : await axios.get(`${API_BASE}/api/posts/timeline/all?userId=${user._id}`, config);
+      const res = username
+        ? await axios.get(`${API_BASE}/api/posts/profile/${username}`, config)
+        : await axios.get(`${API_BASE}/api/posts/timeline/all?userId=${user._id}`, config);
 
-    setPosts(res.data);
-  } catch (err) {
-    console.error("❌ Failed to fetch posts:", err);
-  }
-};
+      setPosts(res.data);
+    } catch (err) {
+      console.error("❌ Failed to fetch posts:", err);
+    }
+  };
 
   useEffect(() => {
     fetchPosts();
@@ -41,10 +41,7 @@ const Feed = ({ username }) => {
   return (
     <div className='feed'>
       <div className="feedWrapper">
-        {/* ✅ Only show Share component on home feed */}
         {!username && <Shares onPostShared={fetchPosts} />}
-        
-        {/* ✅ Render each post */}
         {posts.map((p) => (
           <Post key={p._id} post={p} />
         ))}

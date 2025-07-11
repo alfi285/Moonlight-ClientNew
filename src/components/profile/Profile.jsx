@@ -18,28 +18,39 @@ const Profile = () => {
   const [bio, setBio] = useState("");
   const [profilePicFile, setProfilePicFile] = useState(null);
   const [coverPicFile, setCoverPicFile] = useState(null);
-  const [currentUserData, setCurrentUserData] = useState(null); // fresh current user
+  const [currentUserData, setCurrentUserData] = useState(null);
 
   const token = localStorage.getItem("token");
   const localCurrentUser = JSON.parse(localStorage.getItem("user"));
 
+  if (!localStorage.getItem("user")) {
+  window.location.href = "/login";
+  return null;
+}
+
+
   useEffect(() => {
+    if (!localCurrentUser || !localCurrentUser._id) {
+      console.warn("⛔ No current user found. Skipping profile fetch.");
+      return;
+    }
+
     const fetchData = async () => {
       try {
-        // 1. Get profile user by username
         const userRes = await axios.get(`${API_BASE}/api/users?username=${username}`);
         setUser(userRes.data);
         setCity(userRes.data.from || "");
         setRelationship(userRes.data.relationship || "");
         setBio(userRes.data.bio || "");
 
-        // 2. Fetch fresh current user data from DB
-        const currentUserRes = await axios.get(`${API_BASE}/api/users/${localCurrentUser._id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const currentUserRes = await axios.get(
+          `${API_BASE}/api/users/${localCurrentUser._id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setCurrentUserData(currentUserRes.data);
 
-        // 3. Check follow status
         setIsFollowing(userRes.data.followers?.includes(currentUserRes.data._id));
       } catch (err) {
         console.error("❌ Failed to fetch profile or current user:", err);
@@ -57,10 +68,7 @@ const Profile = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      // Toggle isFollowing
       setIsFollowing(!isFollowing);
-
-      // Update followers count visually
       setUser((prevUser) => ({
         ...prevUser,
         followers: isFollowing
@@ -146,7 +154,9 @@ const Profile = () => {
                   src={
                     coverPicFile
                       ? URL.createObjectURL(coverPicFile)
-                      : user.coverPicture || "/assets/post/defaultCover.jpg"
+                      : user.coverPicture?.startsWith("https://")
+                      ? user.coverPicture
+                      : `${API_BASE}/uploads/${user.coverPicture}` || "/assets/post/defaultCover.jpg"
                   }
                   alt="cover"
                 />
@@ -164,7 +174,9 @@ const Profile = () => {
                   src={
                     profilePicFile
                       ? URL.createObjectURL(profilePicFile)
-                      : user.profilePicture || "/assets/person/noAvatar.png"
+                      : user.profilePicture?.startsWith("https://")
+                      ? user.profilePicture
+                      : `${API_BASE}/uploads/${user.profilePicture}` || "/assets/person/noAvatar.png"
                   }
                   alt="profile"
                 />
@@ -187,7 +199,7 @@ const Profile = () => {
               <span className="profileInfoCity">📍 {user.from || "Unknown City"}</span>
               <span className="profileInfoRel">💍 {relationshipText(user.relationship)}</span>
 
-              {localCurrentUser.username === username ? (
+              {localCurrentUser?.username === username ? (
                 <div className="profileEditSection">
                   <input
                     type="text"
