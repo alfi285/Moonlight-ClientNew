@@ -11,23 +11,28 @@ const Feed = ({ username }) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
 
-  const fetchPosts = async () => {
-    try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
+ const fetchPosts = async () => {
+  if (!user?._id) {
+    console.warn("User ID not found. Cannot fetch posts.");
+    return;
+  }
 
-      const res = username
-        ? await axios.get(`${API_BASE}/api/posts/profile/${username}`, config)
-        : await axios.get(`${API_BASE}/api/posts/timeline/all?userId=${user._id}`, config);
-        
-      setPosts(res.data);
-    } catch (err) {
-      console.error("❌ Failed to fetch posts:", err);
-    }
-  };
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const res = username
+      ? await axios.get(`${API_BASE}/api/posts/profile/${username}`, config)
+      : await axios.get(`${API_BASE}/api/posts/timeline/all?userId=${user._id}`, config);
+
+    setPosts(res.data);
+  } catch (err) {
+    console.error("❌ Failed to fetch posts:", err);
+  }
+};
 
   useEffect(() => {
     fetchPosts();
