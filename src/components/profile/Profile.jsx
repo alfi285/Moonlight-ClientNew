@@ -23,18 +23,7 @@ const Profile = () => {
   const token = localStorage.getItem("token");
   const localCurrentUser = JSON.parse(localStorage.getItem("user"));
 
-  if (!localStorage.getItem("user")) {
-  window.location.href = "/login";
-  return null;
-}
-
-
   useEffect(() => {
-    if (!localCurrentUser || !localCurrentUser._id) {
-      console.warn("⛔ No current user found. Skipping profile fetch.");
-      return;
-    }
-
     const fetchData = async () => {
       try {
         const userRes = await axios.get(`${API_BASE}/api/users?username=${username}`);
@@ -43,12 +32,9 @@ const Profile = () => {
         setRelationship(userRes.data.relationship || "");
         setBio(userRes.data.bio || "");
 
-        const currentUserRes = await axios.get(
-          `${API_BASE}/api/users/${localCurrentUser._id}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const currentUserRes = await axios.get(`${API_BASE}/api/users/${localCurrentUser._id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setCurrentUserData(currentUserRes.data);
 
         setIsFollowing(userRes.data.followers?.includes(currentUserRes.data._id));
@@ -69,6 +55,7 @@ const Profile = () => {
       );
 
       setIsFollowing(!isFollowing);
+
       setUser((prevUser) => ({
         ...prevUser,
         followers: isFollowing
@@ -199,7 +186,7 @@ const Profile = () => {
               <span className="profileInfoCity">📍 {user.from || "Unknown City"}</span>
               <span className="profileInfoRel">💍 {relationshipText(user.relationship)}</span>
 
-              {localCurrentUser?.username === username ? (
+              {localCurrentUser.username === username ? (
                 <div className="profileEditSection">
                   <input
                     type="text"
