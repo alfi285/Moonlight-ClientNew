@@ -22,36 +22,32 @@ const Profile = () => {
 
   const token = localStorage.getItem("token");
   const localCurrentUser = JSON.parse(localStorage.getItem("user"));
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const targetUsername = username || localCurrentUser?.username;
 
-      if (!targetUsername) {
-        console.error("❌ Username is undefined. Cannot fetch user data.");
-        return;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const targetUsername = username || localCurrentUser?.username;
+        if (!targetUsername) return;
+
+        const userRes = await axios.get(`${API_BASE}/api/users?username=${targetUsername}`);
+        setUser(userRes.data);
+        setCity(userRes.data.from || "");
+        setRelationship(userRes.data.relationship || "");
+        setBio(userRes.data.bio || "");
+
+        const currentUserRes = await axios.get(`${API_BASE}/api/users/${localCurrentUser._id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCurrentUserData(currentUserRes.data);
+
+        setIsFollowing(userRes.data.followers?.includes(currentUserRes.data._id));
+      } catch (err) {
+        console.error("❌ Failed to fetch profile or current user:", err);
       }
+    };
 
-      const userRes = await axios.get(`${API_BASE}/api/users?username=${targetUsername}`);
-      setUser(userRes.data);
-      setCity(userRes.data.from || "");
-      setRelationship(userRes.data.relationship || "");
-      setBio(userRes.data.bio || "");
-
-      const currentUserRes = await axios.get(`${API_BASE}/api/users/${localCurrentUser._id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setCurrentUserData(currentUserRes.data);
-
-      setIsFollowing(userRes.data.followers?.includes(currentUserRes.data._id));
-    } catch (err) {
-      console.error("❌ Failed to fetch profile or current user:", err);
-    }
-  };
-
-  fetchData();
-}, [username]);
-
+    fetchData();
+  }, [username]);
 
   const handleFollow = async () => {
     try {
@@ -148,9 +144,9 @@ useEffect(() => {
                   src={
                     coverPicFile
                       ? URL.createObjectURL(coverPicFile)
-                      : user.coverPicture?.startsWith("https://")
+                      : user.coverPicture
                       ? user.coverPicture
-                      : `${API_BASE}/uploads/${user.coverPicture}` || "/assets/post/defaultCover.jpg"
+                      : "/assets/post/defaultCover.jpg"
                   }
                   alt="cover"
                 />
@@ -168,9 +164,9 @@ useEffect(() => {
                   src={
                     profilePicFile
                       ? URL.createObjectURL(profilePicFile)
-                      : user.profilePicture?.startsWith("https://")
+                      : user.profilePicture
                       ? user.profilePicture
-                      : `${API_BASE}/uploads/${user.profilePicture}` || "/assets/person/noAvatar.png"
+                      : "/assets/person/noAvatar.png"
                   }
                   alt="profile"
                 />
@@ -184,7 +180,7 @@ useEffect(() => {
             </div>
 
             <div className="profileInfo">
-              <h4 className="profileInfoName">{user.username}</h4>
+              <h4 className="profileInfoName">{user?.username || "Unknown"}</h4>
               <div className="profileStats">
                 <span><strong>{user.followers?.length || 0}</strong> Followers</span>
                 <span><strong>{user.followings?.length || 0}</strong> Following</span>
@@ -193,7 +189,7 @@ useEffect(() => {
               <span className="profileInfoCity">📍 {user.from || "Unknown City"}</span>
               <span className="profileInfoRel">💍 {relationshipText(user.relationship)}</span>
 
-              {localCurrentUser.username === username ? (
+              {localCurrentUser.username === user.username ? (
                 <div className="profileEditSection">
                   <input
                     type="text"
@@ -231,7 +227,7 @@ useEffect(() => {
           </div>
 
           <div className="profileRightBottom" style={{ display: "flex" }}>
-            <Feed username={username} />
+            <Feed username={user?.username} />
             <Rightbar user={user} profile showSuggestions={true} />
           </div>
         </div>
