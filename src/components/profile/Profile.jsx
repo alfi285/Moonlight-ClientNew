@@ -22,29 +22,36 @@ const Profile = () => {
 
   const token = localStorage.getItem("token");
   const localCurrentUser = JSON.parse(localStorage.getItem("user"));
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const targetUsername = username || localCurrentUser?.username;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userRes = await axios.get(`${API_BASE}/api/users?username=${username}`);
-        setUser(userRes.data);
-        setCity(userRes.data.from || "");
-        setRelationship(userRes.data.relationship || "");
-        setBio(userRes.data.bio || "");
-
-        const currentUserRes = await axios.get(`${API_BASE}/api/users/${localCurrentUser._id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setCurrentUserData(currentUserRes.data);
-
-        setIsFollowing(userRes.data.followers?.includes(currentUserRes.data._id));
-      } catch (err) {
-        console.error("❌ Failed to fetch profile or current user:", err);
+      if (!targetUsername) {
+        console.error("❌ Username is undefined. Cannot fetch user data.");
+        return;
       }
-    };
 
-    fetchData();
-  }, [username]);
+      const userRes = await axios.get(`${API_BASE}/api/users?username=${targetUsername}`);
+      setUser(userRes.data);
+      setCity(userRes.data.from || "");
+      setRelationship(userRes.data.relationship || "");
+      setBio(userRes.data.bio || "");
+
+      const currentUserRes = await axios.get(`${API_BASE}/api/users/${localCurrentUser._id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCurrentUserData(currentUserRes.data);
+
+      setIsFollowing(userRes.data.followers?.includes(currentUserRes.data._id));
+    } catch (err) {
+      console.error("❌ Failed to fetch profile or current user:", err);
+    }
+  };
+
+  fetchData();
+}, [username]);
+
 
   const handleFollow = async () => {
     try {
